@@ -10,5 +10,8 @@ export const usersReducer = createReducer(initialState, (builder) => {
     ...state,
     payload,
   ]);
+  builder.addCase(ac.loadUserCreator, (state, { payload }) => {
+    state.find((item) => (item.id === payload.id ? payload : item));
+  });
   builder.addDefaultCase((state) => state);
 });
