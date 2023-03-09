@@ -6,10 +6,10 @@ import { RegisterLogin } from "../register.login/register.login";
 export default function Home() {
   const repo = useMemo(() => new UsersApiRepo(), []);
 
-  const { users, loadUsers } = useUsers(repo);
+  const { users, readAll } = useUsers(repo);
 
   useEffect(() => {
-    loadUsers();
+    readAll("");
   });
 
   return (
@@ -20,7 +20,7 @@ export default function Home() {
         {users.map((item) => {
           return (
             <div key={item.id}>
-              <h2>{item.name}</h2>
+              <h2>{item.username}</h2>
             </div>
           );
         })}

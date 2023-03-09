@@ -13,11 +13,11 @@ const storage = getStorage(app);
 let pictureName: string = "picture.png";
 let urlUserPicture: string = "";
 
-export default function RegisterForm() {
+export function RegisterForm() {
   const repo = useMemo(() => new UsersApiRepo(), []);
   const { createUser } = useUsers(repo);
   const navigate = useNavigate();
-  const { /*handleSubmit,*/ handleChange, inputs } = useRegister();
+  const { handleChange, inputs } = useRegister();
   const handleSubmit = async (ev: SyntheticEvent<HTMLFormElement>) => {
     ev.preventDefault();
     const formNewUser = ev.currentTarget;
@@ -49,7 +49,6 @@ export default function RegisterForm() {
           <input
             type="text"
             name="username"
-            value={inputs.username}
             onChange={handleChange}
             id="username"
           ></input>
@@ -58,7 +57,6 @@ export default function RegisterForm() {
           <input
             type="text"
             name="email"
-            value={inputs.email}
             onChange={handleChange}
             id="email"
           ></input>
@@ -67,20 +65,12 @@ export default function RegisterForm() {
           <input
             type="text"
             name="password"
-            value={inputs.password}
             onChange={handleChange}
             id="password"
           ></input>
           <br />
           <label>Img</label>
-          <input
-            type="file"
-            name="files"
-            value={inputs.img}
-            onChange={handleChange}
-            id="files"
-          ></input>
-
+          <input type="file" name="picture" id="files"></input>
           <input type="submit" value="Register" />
           <button onClick={() => navigate("/")}>Back Home</button>
         </fieldset>
