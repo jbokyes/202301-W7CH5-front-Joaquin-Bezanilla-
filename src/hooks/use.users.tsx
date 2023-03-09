@@ -8,13 +8,11 @@ export function useUsers(repo: UsersApiRepo) {
   const users = useSelector((state: RootState) => state.users);
   const dispatch = useDispatch<AppDispatch>();
 
-  const loadUsers = async () => {
+  const readAll = async (token: string) => {
     try {
-      const token = localStorage.getItem("Token");
-      if (!token) throw new Error("no token");
-      const data = await repo.loadUsers(token);
-      if (!token) throw new Error("Couldn't load user");
-      dispatch(ac.loadCreator(data));
+      if (!token) throw new Error("Not authorized");
+      const infoUsers = await repo.readAll(token);
+      dispatch(ac.loadCreator(infoUsers.results));
     } catch (error) {
       console.log((error as Error).message);
     }
@@ -31,7 +29,7 @@ export function useUsers(repo: UsersApiRepo) {
   };
   return {
     users,
-    loadUsers,
+    readAll,
     createUser,
   };
 }

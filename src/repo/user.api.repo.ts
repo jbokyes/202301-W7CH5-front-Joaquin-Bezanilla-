@@ -1,8 +1,15 @@
-import { User } from "../models/user.model";
+import { ServerResp, User } from "../models/user.model";
 
 interface UsersApiRepoStructure {
-  loadUsers(token: string): Promise<User[]>;
+  readAll(token: string): Promise<ServerResp>;
+  readOne(id: User["id"], token: string): Promise<ServerResp>;
   createUser(newUser: User): Promise<User>;
+  logUser(info: Partial<User>): Promise<void>;
+  update(
+    userInfo: Partial<User>,
+    action: string,
+    token: string
+  ): Promise<ServerResp>;
 }
 
 export class UsersApiRepo implements UsersApiRepoStructure {
@@ -10,7 +17,7 @@ export class UsersApiRepo implements UsersApiRepoStructure {
   constructor() {
     this.url = "http://localhost:4200/users";
   }
-  async loadUsers(token: string): Promise<User[]> {
+  async readAll(token: string): Promise<ServerResp> {
     const resp = await fetch(this.url, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -19,6 +26,22 @@ export class UsersApiRepo implements UsersApiRepoStructure {
     if (!resp.ok) throw new Error("HTTP Error");
     const data = await resp.json();
     return data;
+  }
+
+  async readOne(id: User["id"], token: string): Promise<ServerResp> {
+    const url = this.url + "/" + id;
+
+    const resp = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer" + token,
+      },
+    });
+    if (!resp.ok)
+      throw new Error("Error http: " + resp.status + resp.statusText);
+
+    const users = (await resp.json()) as ServerResp;
+    return users;
   }
   async createUser(newUser: User): Promise<User> {
     const create = `${this.url}/register`;
@@ -45,5 +68,23 @@ export class UsersApiRepo implements UsersApiRepoStructure {
     resp.json().then((data) => {
       localStorage.setItem("Token", data.results.token);
     });
+  }
+  async update(
+    userInfo: Partial<User>,
+    action: string,
+    token: string
+  ): Promise<ServerResp> {
+    const url = this.url + "/" + action;
+    const resp = await fetch(url, {
+      method: "PATCH",
+      body: JSON.stringify(userInfo),
+      headers: {
+        Authorization: "Bearer" + token,
+      },
+    });
+    if (!resp.ok)
+      throw new Error("Error http: " + resp.status + ". " + resp.statusText);
+    const userData = (await resp.json()) as ServerResp;
+    return userData;
   }
 }

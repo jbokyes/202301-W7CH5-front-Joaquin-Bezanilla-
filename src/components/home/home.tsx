@@ -8,27 +8,23 @@ export default function Home() {
 
   const { users, loadUsers } = useUsers(repo);
 
-  const token = localStorage.getItem("Token");
-
   useEffect(() => {
     loadUsers();
-  }, []);
+  });
 
   return (
     <main>
-      {!token ? (
-        <RegisterLogin></RegisterLogin>
-      ) : (
-        <section className="home">
-          {users.map((item) => {
-            return (
-              <div key={item.id}>
-                <h2>{item.name}</h2>
-              </div>
-            );
-          })}
-        </section>
-      )}
+      <RegisterLogin></RegisterLogin>
+
+      <section className="home">
+        {users.map((item) => {
+          return (
+            <div key={item.id}>
+              <h2>{item.name}</h2>
+            </div>
+          );
+        })}
+      </section>
     </main>
   );
 }
